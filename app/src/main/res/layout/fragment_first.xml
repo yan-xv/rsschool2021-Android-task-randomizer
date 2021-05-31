@@ -25,6 +25,7 @@
         android:hint="Min"
         android:inputType="number"
         android:textSize="20sp"
+        android:maxLength="9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/previous_result" />
@@ -36,6 +37,7 @@
         android:hint="Max"
         android:inputType="number"
         android:textSize="20sp"
+        android:maxLength="9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/min_value" />

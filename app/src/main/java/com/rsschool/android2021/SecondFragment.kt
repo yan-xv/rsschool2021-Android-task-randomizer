@@ -1,5 +1,6 @@
 package com.rsschool.android2021
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,11 +8,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import java.lang.RuntimeException
 
 class SecondFragment : Fragment() {
 
     private var backButton: Button? = null
     private var result: TextView? = null
+    private var listener: OnSecondFragmentDataListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,17 +31,41 @@ class SecondFragment : Fragment() {
 
         val min = arguments?.getInt(MIN_VALUE_KEY) ?: 0
         val max = arguments?.getInt(MAX_VALUE_KEY) ?: 0
+        val resInt = generate(min, max)
 
-        result?.text = generate(min, max).toString()
-
+        result?.text = resInt.toString()
+        listener?.onSetPreviousNumber(resInt)
         backButton?.setOnClickListener {
-            // TODO: implement back
+            listener?.onOpenFirstFragment()
         }
     }
 
-    private fun generate(min: Int, max: Int): Int {
-        // TODO: generate random number
+    private fun generate(min: Int , max: Int): Int {
+        try {
+             if ( min in 0 until max )
+                 return (min..max).random()
+        }
+        catch (e: Exception) {
+            println("Exception: ${e.message}")
+        }
         return 0
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnSecondFragmentDataListener) {
+            listener = context
+        } else {
+            throw RuntimeException(
+                context.toString()
+                    + " must implement OnSecondFragmentDataListener"
+            )
+        }
     }
 
     companion object {
@@ -48,7 +75,9 @@ class SecondFragment : Fragment() {
             val fragment = SecondFragment()
             val args = Bundle()
 
-            // TODO: implement adding arguments
+            args.putInt(MIN_VALUE_KEY, min)
+            args.putInt(MAX_VALUE_KEY, max)
+            fragment.arguments = args
 
             return fragment
         }
